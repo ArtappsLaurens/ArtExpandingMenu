@@ -17,24 +17,56 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Uvq-KZ-7cE">
-                                <rect key="frame" x="165" y="311.5" width="44" height="44"/>
-                                <state key="normal" image="plus"/>
-                            </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="cabnewyork" translatesAutoresizingMaskIntoConstraints="NO" id="eOD-uw-Lrt">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                            </imageView>
+                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jcc-aI-Ch5" customClass="ArtExpandingMenu" customModule="ArtExpandingMenu" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="buttonSize">
+                                        <real key="value" value="50"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="outerCircleScale">
+                                        <real key="value" value="2"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="buttonColor">
+                                        <color key="value" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="menuColor">
+                                        <color key="value" red="0.0" green="0.0" blue="0.0" alpha="0.79834653253424659" colorSpace="calibratedRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="menuScale">
+                                        <real key="value" value="6"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="selectedButtonColor">
+                                        <color key="value" red="0.50196081400000003" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </view>
                         </subviews>
-                        <color key="backgroundColor" red="0.20000000300000001" green="0.20000000300000001" blue="0.20000000300000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" red="0.0" green="0.50196081400000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="Uvq-KZ-7cE" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="GBS-1N-4rF"/>
-                            <constraint firstItem="Uvq-KZ-7cE" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="dGb-y3-I6I"/>
+                            <constraint firstItem="eOD-uw-Lrt" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="VbY-6f-k40"/>
+                            <constraint firstItem="jcc-aI-Ch5" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="VsE-2M-bGH"/>
+                            <constraint firstItem="jcc-aI-Ch5" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="d6V-tr-IT4"/>
+                            <constraint firstItem="eOD-uw-Lrt" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="dw3-Zo-IbJ"/>
+                            <constraint firstItem="jcc-aI-Ch5" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="iRb-Dm-KxR"/>
+                            <constraint firstItem="jcc-aI-Ch5" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="oD6-LG-z5C"/>
+                            <constraint firstItem="eOD-uw-Lrt" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="wkd-53-tdy"/>
+                            <constraint firstItem="eOD-uw-Lrt" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="z7T-uU-pNB"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
+                    <connections>
+                        <outlet property="expandingMenu" destination="jcc-aI-Ch5" id="jhd-mo-m9f"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="32.799999999999997" y="33.733133433283363"/>
         </scene>
     </scenes>
     <resources>
-        <image name="plus" width="44" height="44"/>
+        <image name="cabnewyork" width="1418" height="2448"/>
     </resources>
 </document>
