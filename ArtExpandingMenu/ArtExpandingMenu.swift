@@ -93,6 +93,7 @@ import UIKit
     }
     
     override func draw(_ rect: CGRect) {
+        clipsToBounds = true
         let mainButtonRect = CGRect(x: bounds.size.width-16-buttonSize, y: bounds.size.height-20-buttonSize, width: buttonSize, height: buttonSize)
         
         outerCircleView = UIView.init(frame: mainButtonRect)
