@@ -13,7 +13,7 @@ import UIKit
 @IBDesignable class ArtExpandingMenu : UIView
 {
     private var mainButton : ArtExpandingMenuButton!
-    private var outerCircleView : UIView!
+    private var outerCircleView : UIVisualEffectView!
     private var open : Bool = false
     
     //These variables need to be set before drawing, not after
@@ -44,16 +44,6 @@ import UIKit
             }
         }
     }
-    @IBInspectable var menuColor : UIColor = UIColor.black.withAlphaComponent(0.8)
-    {
-        didSet (newValue) {
-            if(outerCircleView != nil)
-            {
-                outerCircleView.backgroundColor = newValue
-            }
-        }
-    }
-    
     
     @objc private func touchedUpInside() {
         if(open)
@@ -93,8 +83,11 @@ import UIKit
         clipsToBounds = true
         let mainButtonRect = CGRect(x: bounds.size.width-16-buttonSize, y: bounds.size.height-20-buttonSize, width: buttonSize, height: buttonSize)
         
-        outerCircleView = UIView.init(frame: mainButtonRect)
-        outerCircleView.backgroundColor = menuColor
+        let blurEffect = UIBlurEffect.init(style: .dark)
+        outerCircleView = UIVisualEffectView.init(frame: mainButtonRect)
+        outerCircleView.effect = blurEffect
+        outerCircleView.clipsToBounds = true
+        //outerCircleView.backgroundColor = menuColor
         outerCircleView.layer.cornerRadius = buttonSize/2
         addSubview(outerCircleView)
         mainButton = ArtExpandingMenuButton(frame: mainButtonRect)
