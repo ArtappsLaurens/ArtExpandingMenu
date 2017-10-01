@@ -8,14 +8,8 @@
 
 import UIKit
 
-//func subViewsDescription()
-//{
-//    print("DELETE ME!")
-//    for subview in subviews
-//    {
-//        print(subview)
-//    }
-//}
+//Don't forget to set backgroundcolor to clear and opaque to off
+
 @IBDesignable class ArtExpandingMenu : UIView
 {
     private var mainButton : ArtExpandingMenuButton!
@@ -23,9 +17,9 @@ import UIKit
     private var open : Bool = false
     
     //These variables need to be set before drawing, not after
-    @IBInspectable var buttonSize : CGFloat = 50
-    @IBInspectable var menuScale : CGFloat = 5
-    //these variables need to be set before drawing, not after
+    @IBInspectable var buttonSize : CGFloat = 55
+    @IBInspectable var menuSize : CGFloat = 300
+    //These variables need to be set before drawing, not after
     
     @IBInspectable var buttonColor : UIColor = .red {
         didSet (newValue) {
@@ -66,7 +60,8 @@ import UIKit
         {
             UIView.animate(withDuration: 0.2, delay: 0, options: [.allowUserInteraction], animations: {
                 self.mainButton.transform = .identity
-                self.outerCircleView.transform = .identity
+                self.outerCircleView.frame = self.mainButton.frame
+                self.outerCircleView.layer.cornerRadius = self.mainButton.frame.width/2
                 self.mainButton.color = self.buttonColor
             })
 //            UIView.animate(withDuration: 1, animations: {
@@ -85,7 +80,9 @@ import UIKit
                 
             })
             UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0, options: [], animations: {
-                self.outerCircleView.transform = CGAffineTransform.init(scaleX: self.menuScale, y: self.menuScale)
+                //self.outerCircleView.transform = CGAffineTransform.init(scaleX: self.menuScale, y: self.menuScale)
+                self.outerCircleView.frame = self.outerCircleView.frame.centerAndAdjustPercentage(newWidth: self.menuSize, newHeight: self.menuSize)
+                self.outerCircleView.layer.cornerRadius = self.outerCircleView.frame.width/2
             })
             
         }
@@ -174,4 +171,20 @@ import UIKit
     }
     
 
+}
+
+extension CGRect {
+    func centerAndAdjustPercentage(newWidth : CGFloat, newHeight : CGFloat) -> CGRect {
+        let x = self.origin.x
+        let y = self.origin.y
+        let w = self.width
+        let h = self.height
+        
+        let oldCenterPoint = CGPoint(x: x + w/2, y: y + h/2)
+        
+        let newX = oldCenterPoint.x - newWidth/2
+        let newY = oldCenterPoint.y - newHeight/2
+        
+        return CGRect(x: newX, y: newY, width: newWidth, height: newHeight)
+    }
 }
