@@ -46,15 +46,37 @@
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zNQ-Az-0QC">
+                                <rect key="frame" x="133" y="58" width="108" height="30"/>
+                                <state key="normal" title="Options expand">
+                                    <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                </state>
+                                <connections>
+                                    <action selector="optionsExpandPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="gY3-hf-4rK"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fCl-wx-eai">
+                                <rect key="frame" x="144" y="20" width="87" height="30"/>
+                                <state key="normal" title="Fully expand">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="fullyExpandPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="J6Z-Es-KrR"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.50196081400000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstItem="jcc-aI-Ch5" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="3LB-Pi-Lnk"/>
+                            <constraint firstItem="zNQ-Az-0QC" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="7gv-Ix-qo0"/>
+                            <constraint firstItem="fCl-wx-eai" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="8xR-50-lDT"/>
+                            <constraint firstItem="jcc-aI-Ch5" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="Cxj-3H-TCv"/>
+                            <constraint firstItem="jcc-aI-Ch5" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="FMn-XW-LNY"/>
+                            <constraint firstItem="fCl-wx-eai" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="ISF-Wz-jYH"/>
+                            <constraint firstItem="zNQ-Az-0QC" firstAttribute="top" secondItem="fCl-wx-eai" secondAttribute="bottom" constant="8" id="IWo-X3-Svl"/>
+                            <constraint firstItem="jcc-aI-Ch5" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="LpP-um-6TG"/>
                             <constraint firstItem="eOD-uw-Lrt" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="VbY-6f-k40"/>
-                            <constraint firstItem="jcc-aI-Ch5" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="VsE-2M-bGH"/>
-                            <constraint firstItem="jcc-aI-Ch5" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="d6V-tr-IT4"/>
                             <constraint firstItem="eOD-uw-Lrt" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="dw3-Zo-IbJ"/>
-                            <constraint firstItem="jcc-aI-Ch5" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="iRb-Dm-KxR"/>
-                            <constraint firstItem="jcc-aI-Ch5" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="oD6-LG-z5C"/>
                             <constraint firstItem="eOD-uw-Lrt" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="wkd-53-tdy"/>
                             <constraint firstItem="eOD-uw-Lrt" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="z7T-uU-pNB"/>
                         </constraints>

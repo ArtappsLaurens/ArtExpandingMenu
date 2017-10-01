@@ -45,39 +45,72 @@ import UIKit
         }
     }
     
+    func fullExpand() {
+        let middleCenterPoint = self.middleButtonRect.centerPoint()
+        let radius = sqrt((middleCenterPoint.x * middleCenterPoint.x) + (middleCenterPoint.y * middleCenterPoint.y))
+        expandToRadius(radius: radius)
+    }
+    
+    func optionsExpand() {
+        let middleCenterPoint = self.middleButtonRect.centerPoint()
+        let radius = middleCenterPoint.y - 50
+        expandToRadius(radius: radius)
+    }
+    
+    func expandToRadius(radius : CGFloat) { //This function is not used in touchedupinside of mainbutton, because the animation and startingpoint needs to be different
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: [.allowUserInteraction], animations: {
+            self.mainButton.transform = CGAffineTransform(rotationAngle: 45 * (.pi / 180))
+            self.mainButton.color = self.selectedButtonColor
+            self.mainButton.center = self.middleButtonRect.centerPoint()
+            self.outerCircleView.center = self.middleButtonRect.centerPoint()
+        })
+        UIView.animate(withDuration: 0.5, delay: 0.1, options: [.curveEaseInOut], animations: {
+            
+            self.outerCircleView.frame = self.middleButtonRect.adjustSizeWhileCentered(newWidth: radius*2, newHeight: radius*2)
+            self.outerCircleView.layer.cornerRadius = radius
+        })
+        open = true
+    }
+    
     @objc private func touchedUpInside() {
         if(open)
         {
             UIView.animate(withDuration: 0.2, delay: 0, options: [.allowUserInteraction], animations: {
                 self.mainButton.transform = .identity
-                self.outerCircleView.frame = self.mainButton.frame
-                self.outerCircleView.layer.cornerRadius = self.mainButton.frame.width/2
+                self.mainButton.center = self.initialButtonRect.centerPoint()
+                self.outerCircleView.frame = self.initialButtonRect
+                self.outerCircleView.layer.cornerRadius = self.buttonRadius
                 self.mainButton.color = self.buttonColor
             })
-//            UIView.animate(withDuration: 1, animations: {
-//
-//            })
-            
         }
         else
         {
             UIView.animate(withDuration: 0.2, delay: 0, options: [.allowUserInteraction], animations: {
-                self.mainButton.transform = CGAffineTransform(rotationAngle: 45 * (.pi / 180))
-                self.mainButton.color = self.selectedButtonColor
+                
                 
             })
-            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0, options: [], animations: {
-                self.outerCircleView.frame = self.outerCircleView.frame.centerAndAdjustPercentage(newWidth: self.menuRadius*2, newHeight: self.menuRadius*2)
-                self.outerCircleView.layer.cornerRadius = self.outerCircleView.frame.width/2
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0, options: [.allowUserInteraction], animations: {
+                self.mainButton.transform = CGAffineTransform(rotationAngle: 45 * (.pi / 180))
+                
+                self.mainButton.color = self.selectedButtonColor
+                self.outerCircleView.frame = self.initialButtonRect.adjustSizeWhileCentered(newWidth: self.menuRadius*2, newHeight: self.menuRadius*2)
+                self.outerCircleView.layer.cornerRadius = self.menuRadius
             })
             
         }
         open = !open
     }
     
+    private var middleButtonRect : CGRect {
+        return CGRect(x: bounds.size.width/2-buttonRadius, y: bounds.size.height-20-buttonRadius*2, width: buttonRadius*2, height: buttonRadius*2)
+    }
+    
+    private var initialButtonRect : CGRect {
+        return CGRect(x: bounds.size.width-16-buttonRadius*2, y: bounds.size.height-20-buttonRadius*2, width: buttonRadius*2, height: buttonRadius*2)
+    }
     override func draw(_ rect: CGRect) {
         clipsToBounds = true
-        let mainButtonRect = CGRect(x: bounds.size.width-16-buttonRadius*2, y: bounds.size.height-20-buttonRadius*2, width: buttonRadius*2, height: buttonRadius*2)
+        let mainButtonRect = initialButtonRect
         
         let blurEffect = UIBlurEffect.init(style: .dark)
         outerCircleView = UIVisualEffectView.init(frame: mainButtonRect)
@@ -133,7 +166,8 @@ import UIKit
         circleView.isUserInteractionEnabled = false
         addSubview(circleView)
         if(image != nil) {
-            let centerPoint = CGPoint(x: bounds.size.width*0.5,y: bounds.size.height*0.5)
+            //let centerPoint = CGPoint(x: bounds.size.width*0.5,y: bounds.size.height*0.5)
+            let centerPoint = bounds.centerPoint()
             let imageRect = CGRect(x: centerPoint.x - image!.size.width/2, y: centerPoint.y - image!.size.height/2, width: image!.size.width, height: image!.size.height)
             imageView = UIImageView.init(frame: imageRect)
             imageView?.image = image
@@ -162,8 +196,17 @@ import UIKit
 
 }
 
+extension CGPoint {
+    func centeredCGRectForSize(width : CGFloat, height : CGFloat) -> CGRect {
+        let newX = self.x - width/2
+        let newY = self.y - height/2
+        return CGRect(x: newX, y: newY, width: width, height: height)
+    }
+}
+
+
 extension CGRect {
-    func centerAndAdjustPercentage(newWidth : CGFloat, newHeight : CGFloat) -> CGRect {
+    func adjustSizeWhileCentered(newWidth : CGFloat, newHeight : CGFloat) -> CGRect {
         let x = self.origin.x
         let y = self.origin.y
         let w = self.width
@@ -175,5 +218,9 @@ extension CGRect {
         let newY = oldCenterPoint.y - newHeight/2
         
         return CGRect(x: newX, y: newY, width: newWidth, height: newHeight)
+    }
+    
+    func centerPoint() -> CGPoint {
+        return CGPoint(x: self.origin.x + width/2, y: self.origin.y + height/2)
     }
 }
