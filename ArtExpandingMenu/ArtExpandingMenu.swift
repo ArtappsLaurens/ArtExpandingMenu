@@ -17,8 +17,8 @@ import UIKit
     private var open : Bool = false
     
     //These variables need to be set before drawing, not after
-    @IBInspectable var buttonSize : CGFloat = 55
-    @IBInspectable var menuSize : CGFloat = 300
+    @IBInspectable var buttonRadius : CGFloat = 25
+    @IBInspectable var menuRadius : CGFloat = 150
     //These variables need to be set before drawing, not after
     
     @IBInspectable var buttonColor : UIColor = .red {
@@ -64,14 +64,10 @@ import UIKit
             UIView.animate(withDuration: 0.2, delay: 0, options: [.allowUserInteraction], animations: {
                 self.mainButton.transform = CGAffineTransform(rotationAngle: 45 * (.pi / 180))
                 self.mainButton.color = self.selectedButtonColor
-//                let outerCircleRadius = self.smallestSize-self.mainButtonSize/2
-//                let outerCircleRect = CGRect(x: self.bounds.size.width-self.mainButtonSize/2-outerCircleRadius, y: self.bounds.size.height-self.mainButtonSize/2-outerCircleRadius, width: outerCircleRadius*2, height: outerCircleRadius*2)
-//                self.outerCircleView.frame = outerCircleRect
                 
             })
             UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0, options: [], animations: {
-                //self.outerCircleView.transform = CGAffineTransform.init(scaleX: self.menuScale, y: self.menuScale)
-                self.outerCircleView.frame = self.outerCircleView.frame.centerAndAdjustPercentage(newWidth: self.menuSize, newHeight: self.menuSize)
+                self.outerCircleView.frame = self.outerCircleView.frame.centerAndAdjustPercentage(newWidth: self.menuRadius*2, newHeight: self.menuRadius*2)
                 self.outerCircleView.layer.cornerRadius = self.outerCircleView.frame.width/2
             })
             
@@ -81,14 +77,14 @@ import UIKit
     
     override func draw(_ rect: CGRect) {
         clipsToBounds = true
-        let mainButtonRect = CGRect(x: bounds.size.width-16-buttonSize, y: bounds.size.height-20-buttonSize, width: buttonSize, height: buttonSize)
+        let mainButtonRect = CGRect(x: bounds.size.width-16-buttonRadius*2, y: bounds.size.height-20-buttonRadius*2, width: buttonRadius*2, height: buttonRadius*2)
         
         let blurEffect = UIBlurEffect.init(style: .dark)
         outerCircleView = UIVisualEffectView.init(frame: mainButtonRect)
         outerCircleView.effect = blurEffect
         outerCircleView.clipsToBounds = true
         //outerCircleView.backgroundColor = menuColor
-        outerCircleView.layer.cornerRadius = buttonSize/2
+        outerCircleView.layer.cornerRadius = buttonRadius
         addSubview(outerCircleView)
         mainButton = ArtExpandingMenuButton(frame: mainButtonRect)
         let plusImage = UIImage(named: "plus")
