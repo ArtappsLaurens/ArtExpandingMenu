@@ -15,9 +15,7 @@ class ViewController: UIViewController {
         expandingMenu.fullExpand()
         //expandingMenu.expandToRadius(radius: 500)
     }
-    @IBAction func optionsExpandPressed(_ sender: Any) {
-        expandingMenu.optionsExpand()
-    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         

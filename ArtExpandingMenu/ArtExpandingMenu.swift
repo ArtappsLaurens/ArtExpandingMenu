@@ -51,12 +51,6 @@ import UIKit
         expandToRadius(radius: radius)
     }
     
-    func optionsExpand() {
-        let middleCenterPoint = self.middleButtonRect.centerPoint()
-        let radius = middleCenterPoint.y - 50
-        expandToRadius(radius: radius)
-    }
-    
     func expandToRadius(radius : CGFloat) { //This function is not used in touchedupinside of mainbutton, because the animation and startingpoint needs to be different
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: [.allowUserInteraction], animations: {
             self.mainButton.transform = CGAffineTransform(rotationAngle: 45 * (.pi / 180))
