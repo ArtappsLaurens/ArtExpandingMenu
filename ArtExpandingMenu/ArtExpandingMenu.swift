@@ -1,177 +1,172 @@
 //
-//  ArtExpandingMenuButton.swift
+//  ArtExpandingMenu.swift
 //  ArtExpandingMenu
 //
-//  Created by Laurens Biesheuvel on 30-09-17.
+//  Created by Laurens Biesheuvel on 02-10-17.
 //  Copyright © 2017 Artapps. All rights reserved.
 //
 
+
+//Verwijder extensions/functies hierin om te kijken of je ze wel nodig hebt
 import UIKit
 
-//Don't forget to set backgroundcolor to clear and opaque to off
-
-@IBDesignable class ArtExpandingMenu : UIView
-{
+@IBDesignable class ArtExpandingMenu : UIView {
+    
     private var mainButton : ArtExpandingMenuButton!
-    private var outerCircleView : UIVisualEffectView!
-    private var open : Bool = false
-    
-    //These variables need to be set before drawing, not after
+    private var outerCircle : UIVisualEffectView!
+    private var isExpanded : Bool = false
     @IBInspectable var buttonRadius : CGFloat = 25
+    {
+        didSet {
+            setNeedsLayout()
+        }
+    }
     @IBInspectable var menuRadius : CGFloat = 150
-    //These variables need to be set before drawing, not after
+    {
+        didSet {
+            setNeedsLayout()
+        }
+    }
     
-    @IBInspectable var buttonColor : UIColor = .red {
-        didSet (newValue) {
-            if(mainButton != nil)
+    @IBInspectable var buttonColor : UIColor = #colorLiteral(red: 0.7843137255, green: 0, blue: 0, alpha: 1) {
+        didSet {
+            if(!isExpanded)
             {
-                if(!open)
-                {
-                    mainButton.color = newValue
-                }
+                mainButton.color = buttonColor
             }
         }
     }
     
-    @IBInspectable var selectedButtonColor : UIColor = .blue {
-        didSet (newValue) {
-            if(mainButton != nil)
+    @IBInspectable var selectedButtonColor : UIColor = #colorLiteral(red: 0.7058823529, green: 0.1491314173, blue: 0, alpha: 1) {
+        didSet {
+            if(isExpanded)
             {
-                if(open)
-                {
-                    mainButton.color = newValue
-                }
+                mainButton.color = selectedButtonColor
             }
         }
     }
     
-    func fullExpand() {
-        let middleCenterPoint = self.middleButtonRect.centerPoint()
-        let radius = sqrt((middleCenterPoint.x * middleCenterPoint.x) + (middleCenterPoint.y * middleCenterPoint.y))
-        expandToRadius(radius: radius)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        collectedInit()
     }
     
-    func expandToRadius(radius : CGFloat) { //This function is not used in touchedupinside of mainbutton, because the animation and startingpoint needs to be different
-        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: [.allowUserInteraction], animations: {
-            self.mainButton.transform = CGAffineTransform(rotationAngle: 45 * (.pi / 180))
-            self.mainButton.color = self.selectedButtonColor
-            self.mainButton.center = self.middleButtonRect.centerPoint()
-            self.outerCircleView.center = self.middleButtonRect.centerPoint()
-        })
-        UIView.animate(withDuration: 0.5, delay: 0.1, options: [.curveEaseInOut], animations: {
-            
-            self.outerCircleView.frame = self.middleButtonRect.adjustSizeWhileCentered(newWidth: radius*2, newHeight: radius*2)
-            self.outerCircleView.layer.cornerRadius = radius
-        })
-        open = true
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        collectedInit()
     }
     
-    @objc private func touchedUpInside() {
-        if(open)
+    override func layoutSubviews() {
+        mainButton.transform = .identity
+        mainButton.frame = initialButtonRect
+        if(isExpanded)
         {
-            UIView.animate(withDuration: 0.2, delay: 0, options: [.allowUserInteraction], animations: {
-                self.mainButton.transform = .identity
-                self.mainButton.center = self.initialButtonRect.centerPoint()
-                self.outerCircleView.frame = self.initialButtonRect
-                self.outerCircleView.layer.cornerRadius = self.buttonRadius
-                self.mainButton.color = self.buttonColor
-            })
+            mainButton.transform = CGAffineTransform(rotationAngle: 45 * (.pi / 180))
+            outerCircle.frame = self.initialButtonRect.adjustSizeWhileCentered(newWidth: self.menuRadius*2, newHeight: self.menuRadius*2)
+            outerCircle.layer.cornerRadius = self.menuRadius
+        } else {
+            outerCircle.frame = initialButtonRect
+            outerCircle.layer.cornerRadius = buttonRadius
         }
-        else
-        {
-            UIView.animate(withDuration: 0.2, delay: 0, options: [.allowUserInteraction], animations: {
-                
-                
-            })
-            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0, options: [.allowUserInteraction], animations: {
-                self.mainButton.transform = CGAffineTransform(rotationAngle: 45 * (.pi / 180))
-                
-                self.mainButton.color = self.selectedButtonColor
-                self.outerCircleView.frame = self.initialButtonRect.adjustSizeWhileCentered(newWidth: self.menuRadius*2, newHeight: self.menuRadius*2)
-                self.outerCircleView.layer.cornerRadius = self.menuRadius
-            })
-            
-        }
-        open = !open
-    }
-    
-    private var middleButtonRect : CGRect {
-        return CGRect(x: bounds.size.width/2-buttonRadius, y: bounds.size.height-20-buttonRadius*2, width: buttonRadius*2, height: buttonRadius*2)
-    }
-    
-    private var initialButtonRect : CGRect {
-        return CGRect(x: bounds.size.width-16-buttonRadius*2, y: bounds.size.height-20-buttonRadius*2, width: buttonRadius*2, height: buttonRadius*2)
-    }
-    override func draw(_ rect: CGRect) {
-        clipsToBounds = true
-        let mainButtonRect = initialButtonRect
         
-        let blurEffect = UIBlurEffect.init(style: .dark)
-        outerCircleView = UIVisualEffectView.init(frame: mainButtonRect)
-        outerCircleView.effect = blurEffect
-        outerCircleView.clipsToBounds = true
-        //outerCircleView.backgroundColor = menuColor
-        outerCircleView.layer.cornerRadius = buttonRadius
-        addSubview(outerCircleView)
-        mainButton = ArtExpandingMenuButton(frame: mainButtonRect)
+    }
+    func collectedInit() {
+        
+        let blurEffect = UIBlurEffect(style: .dark)
+        outerCircle = UIVisualEffectView.init(effect: blurEffect)
+        outerCircle.clipsToBounds = true
+        addSubview(outerCircle)
+        mainButton = ArtExpandingMenuButton()
         let plusImage = UIImage(named: "plus")
         mainButton.image = plusImage
-        mainButton.tintColor = .white
         mainButton.color = buttonColor
+        mainButton.tintColor = tintColor
         mainButton.addTarget(self, action: #selector(touchedUpInside), for: .touchUpInside)
         addSubview(mainButton)
         
     }
     
+//    private var middleButtonRect : CGRect {
+//        return CGRect(x: bounds.size.width/2-buttonRadius, y: bounds.size.height-20-buttonRadius*2, width: buttonRadius*2, height: buttonRadius*2)
+//    }
     
-}
-@IBDesignable class ArtExpandingMenuButton: UIControl {
-    private var circleView : UIView!
-    private var highlightedCircleView : UIView!
-    private var imageView : UIImageView?
-    @IBInspectable var image : UIImage?
-    {
-        didSet {
-            if (imageView != nil)
-            {
-                imageView?.image = image
-                let centerPoint = CGPoint(x: bounds.size.width*0.5,y: bounds.size.height*0.5)
-                let imageRect = CGRect(x: centerPoint.x - image!.size.width/2, y: centerPoint.y - image!.size.height/2, width: image!.size.width, height: image!.size.height)
-                imageView?.frame = imageRect
-            }
-        }
+    private var initialButtonRect : CGRect {
+        return CGRect(x: bounds.size.width-16-buttonRadius*2, y: bounds.size.height-20-buttonRadius*2, width: buttonRadius*2, height: buttonRadius*2)
     }
     
-    @IBInspectable var color : UIColor = .red {
-        didSet {
-            if (circleView != nil)
-            {
-                circleView.backgroundColor = color
-            }
-        }
-    }
-
-    override func draw(_ rect: CGRect) {
-        
-        layer.cornerRadius = rect.width/2
-        clipsToBounds = true
-        circleView = UIView.init(frame: rect)
-        circleView.backgroundColor = color
-        circleView.isUserInteractionEnabled = false
-        addSubview(circleView)
-        if(image != nil) {
-            //let centerPoint = CGPoint(x: bounds.size.width*0.5,y: bounds.size.height*0.5)
-            let centerPoint = bounds.centerPoint()
-            let imageRect = CGRect(x: centerPoint.x - image!.size.width/2, y: centerPoint.y - image!.size.height/2, width: image!.size.width, height: image!.size.height)
-            imageView = UIImageView.init(frame: imageRect)
-            imageView?.image = image
+    @objc private func touchedUpInside() {
+        if(isExpanded)
+        {
+            UIView.animate(withDuration: 0.2, delay: 0, options: [.allowUserInteraction, .curveEaseInOut], animations: {
+                self.mainButton.transform = .identity
+                self.mainButton.center = self.initialButtonRect.centerPoint()
+                self.outerCircle.frame = self.initialButtonRect
+                self.outerCircle.layer.cornerRadius = self.buttonRadius
+                self.mainButton.color = self.buttonColor
+            })
         }
         else
         {
-            imageView = UIImageView.init(frame: CGRect.zero)
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0, options: [.allowUserInteraction], animations: {
+                self.mainButton.transform = CGAffineTransform(rotationAngle: 45 * (.pi / 180))
+                self.mainButton.color = self.selectedButtonColor
+                self.outerCircle.frame = self.initialButtonRect.adjustSizeWhileCentered(newWidth: self.menuRadius*2, newHeight: self.menuRadius*2)
+                self.outerCircle.layer.cornerRadius = self.menuRadius
+            })
+            
         }
-        addSubview(imageView!)
-        // Drawing code
+        isExpanded = !isExpanded
+    }
+}
+
+@IBDesignable class ArtExpandingMenuButton: UIControl {
+    
+    var circleView : UIView!
+    var imageView : UIImageView!
+    @IBInspectable var image : UIImage? {
+        didSet {
+            setImage()
+        }
+    }
+    
+    @IBInspectable var color : UIColor = #colorLiteral(red: 0.7843137255, green: 0, blue: 0, alpha: 1) {
+        didSet {
+            setColor()
+        }
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        collectedInit()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        collectedInit()
+    }
+    
+    func collectedInit() {
+        circleView = UIView()
+        circleView.backgroundColor = color
+        circleView.isUserInteractionEnabled = false
+        addSubview(circleView)
+        imageView = UIImageView()
+        imageView.contentMode = .center
+        addSubview(imageView)
+    }
+    
+    override func layoutSubviews() {
+        circleView.frame = bounds
+        circleView.layer.cornerRadius = bounds.width/2
+        imageView.frame = bounds
+    }
+    
+    func setImage() {
+        imageView.image = image
+    }
+    
+    func setColor() {
+        circleView.backgroundColor = color
     }
     
     override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
@@ -186,18 +181,7 @@ import UIKit
             self.alpha = 1
         })
     }
-    
-
 }
-
-extension CGPoint {
-    func centeredCGRectForSize(width : CGFloat, height : CGFloat) -> CGRect {
-        let newX = self.x - width/2
-        let newY = self.y - height/2
-        return CGRect(x: newX, y: newY, width: width, height: height)
-    }
-}
-
 
 extension CGRect {
     func adjustSizeWhileCentered(newWidth : CGFloat, newHeight : CGFloat) -> CGRect {

@@ -9,13 +9,8 @@
 import UIKit
 
 class ViewController: UIViewController {
-    @IBOutlet weak var expandingMenu: ArtExpandingMenu!
+    @IBOutlet weak var menu: ArtExpandingMenu!
     
-    @IBAction func fullyExpandPressed(_ sender: Any) {
-        expandingMenu.fullExpand()
-        //expandingMenu.expandToRadius(radius: 500)
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         
