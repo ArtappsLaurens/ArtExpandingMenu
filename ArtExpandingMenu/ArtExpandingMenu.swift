@@ -15,6 +15,11 @@ import UIKit
     private var mainButton : ArtExpandingMenuButton!
     private var outerCircle : UIVisualEffectView!
     private var isExpanded : Bool = false
+    
+    var subButtons : [ArtExpandingMenuButton] = []
+    var optionCount = 4
+    var radiusRatio : CGFloat = 0.66
+    
     @IBInspectable var buttonRadius : CGFloat = 25
     {
         didSet {
@@ -27,6 +32,7 @@ import UIKit
             setNeedsLayout()
         }
     }
+    
     
     @IBInspectable var buttonColor : UIColor = #colorLiteral(red: 0.7843137255, green: 0, blue: 0, alpha: 1) {
         didSet {
@@ -64,18 +70,32 @@ import UIKit
             mainButton.transform = CGAffineTransform(rotationAngle: -135 * (.pi / 180))
             outerCircle.frame = self.initialButtonRect.adjustSizeWhileCentered(newWidth: self.menuRadius*2, newHeight: self.menuRadius*2)
             outerCircle.layer.cornerRadius = self.menuRadius
+            for (index, subButton) in subButtons.enumerated() {
+                subButton.center = centerPointForSubButton(index: index)
+            }
         } else {
             outerCircle.frame = initialButtonRect
             outerCircle.layer.cornerRadius = buttonRadius
+            for subButton in subButtons {
+                subButton.center = initialButtonRect.centerPoint()
+            }
         }
         
     }
+    
     func collectedInit() {
         
         let blurEffect = UIBlurEffect(style: .dark)
         outerCircle = UIVisualEffectView.init(effect: blurEffect)
         outerCircle.clipsToBounds = true
         addSubview(outerCircle)
+        for i in 1...optionCount {
+            let subButton = ArtExpandingMenuButton()
+            subButton.frame.size = CGSize(width: 20, height: 20)
+            subButtons.append(subButton)
+            addSubview(subButton)
+            
+        }
         mainButton = ArtExpandingMenuButton()
         let plusImage = UIImage(named: "plus")
         mainButton.image = plusImage
@@ -94,6 +114,14 @@ import UIKit
         return CGRect(x: bounds.size.width-16-buttonRadius*2, y: bounds.size.height-20-buttonRadius*2, width: buttonRadius*2, height: buttonRadius*2)
     }
     
+    private func centerPointForSubButton(index : Int) -> CGPoint {
+        let buttonsRadius = radiusRatio * menuRadius
+        let radiansBetweenButtons = (0.5 * CGFloat.pi) / CGFloat(optionCount-1)
+        let x = menuRadius - buttonsRadius * cos(radiansBetweenButtons * CGFloat(index)) + outerCircle.frame.origin.x
+        let y = menuRadius - buttonsRadius * sin(radiansBetweenButtons * CGFloat(index)) + outerCircle.frame.origin.y
+        return CGPoint(x: x, y: y)
+    }
+    
     @objc private func touchedUpInside() {
         if(isExpanded)
         {
@@ -103,6 +131,12 @@ import UIKit
                 self.outerCircle.frame = self.initialButtonRect
                 self.outerCircle.layer.cornerRadius = self.buttonRadius
                 self.mainButton.color = self.buttonColor
+                
+                for subButton in self.subButtons {
+                    subButton.center = self.initialButtonRect.centerPoint()
+                    subButton.alpha = 0
+                }
+                
             })
         }
         else
@@ -112,6 +146,11 @@ import UIKit
                 self.mainButton.color = self.selectedButtonColor
                 self.outerCircle.frame = self.initialButtonRect.adjustSizeWhileCentered(newWidth: self.menuRadius*2, newHeight: self.menuRadius*2)
                 self.outerCircle.layer.cornerRadius = self.menuRadius
+                
+                for (index, subButton) in self.subButtons.enumerated() {
+                    subButton.center = self.centerPointForSubButton(index: index)
+                    subButton.alpha = 1
+                }
             })
             
         }
