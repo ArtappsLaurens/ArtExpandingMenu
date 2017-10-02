@@ -61,7 +61,7 @@ import UIKit
         mainButton.frame = initialButtonRect
         if(isExpanded)
         {
-            mainButton.transform = CGAffineTransform(rotationAngle: 45 * (.pi / 180))
+            mainButton.transform = CGAffineTransform(rotationAngle: -135 * (.pi / 180))
             outerCircle.frame = self.initialButtonRect.adjustSizeWhileCentered(newWidth: self.menuRadius*2, newHeight: self.menuRadius*2)
             outerCircle.layer.cornerRadius = self.menuRadius
         } else {
@@ -108,7 +108,7 @@ import UIKit
         else
         {
             UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0, options: [.allowUserInteraction], animations: {
-                self.mainButton.transform = CGAffineTransform(rotationAngle: 45 * (.pi / 180))
+                self.mainButton.transform = CGAffineTransform(rotationAngle: -135 * (.pi / 180))
                 self.mainButton.color = self.selectedButtonColor
                 self.outerCircle.frame = self.initialButtonRect.adjustSizeWhileCentered(newWidth: self.menuRadius*2, newHeight: self.menuRadius*2)
                 self.outerCircle.layer.cornerRadius = self.menuRadius
