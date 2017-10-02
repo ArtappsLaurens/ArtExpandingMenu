@@ -17,7 +17,7 @@ import UIKit
     private var isExpanded : Bool = false
     
     var subButtons : [ArtExpandingMenuButton] = []
-    var optionCount = 4
+    var optionCount = 3
     var radiusRatio : CGFloat = 0.66
     
     @IBInspectable var buttonRadius : CGFloat = 25
@@ -91,7 +91,9 @@ import UIKit
         addSubview(outerCircle)
         for i in 1...optionCount {
             let subButton = ArtExpandingMenuButton()
-            subButton.frame.size = CGSize(width: 20, height: 20)
+            subButton.frame.size = CGSize(width: 30, height: 30)
+            subButton.color = .white
+            subButton.alpha = 0
             subButtons.append(subButton)
             addSubview(subButton)
             
@@ -125,19 +127,24 @@ import UIKit
     @objc private func touchedUpInside() {
         if(isExpanded)
         {
-            UIView.animate(withDuration: 0.2, delay: 0, options: [.allowUserInteraction, .curveEaseInOut], animations: {
+            UIView.animate(withDuration: 0.2, delay: 0.05 * Double(optionCount), options: [.allowUserInteraction, .curveEaseInOut], animations: {
                 self.mainButton.transform = .identity
                 self.mainButton.center = self.initialButtonRect.centerPoint()
                 self.outerCircle.frame = self.initialButtonRect
                 self.outerCircle.layer.cornerRadius = self.buttonRadius
                 self.mainButton.color = self.buttonColor
-                
-                for subButton in self.subButtons {
-                    subButton.center = self.initialButtonRect.centerPoint()
-                    subButton.alpha = 0
-                }
-                
             })
+            for (index, subButton) in self.subButtons.enumerated() {
+                
+                
+                UIView.animate(withDuration: 0.2, delay: 0.05*Double(index), options: [.allowUserInteraction, .curveEaseInOut], animations: {
+                    subButton.center = self.initialButtonRect.centerPoint()
+                })
+                UIView.animate(withDuration: 0.1, delay: 0.05*Double(index), options: [.allowUserInteraction, .curveEaseInOut], animations: {
+                    subButton.alpha = 0
+                })
+                
+            }
         }
         else
         {
@@ -147,11 +154,17 @@ import UIKit
                 self.outerCircle.frame = self.initialButtonRect.adjustSizeWhileCentered(newWidth: self.menuRadius*2, newHeight: self.menuRadius*2)
                 self.outerCircle.layer.cornerRadius = self.menuRadius
                 
-                for (index, subButton) in self.subButtons.enumerated() {
-                    subButton.center = self.centerPointForSubButton(index: index)
-                    subButton.alpha = 1
-                }
+                
             })
+            
+            for (index, subButton) in self.subButtons.enumerated() {
+                UIView.animate(withDuration: 0.6, delay: 0.05*Double(index), usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: [.allowUserInteraction], animations: {
+                    subButton.center = self.centerPointForSubButton(index: index)
+                })
+                UIView.animate(withDuration: 0.3, delay: 0.05+0.05*Double(index), options: [.allowUserInteraction, .curveEaseInOut], animations: {
+                    subButton.alpha = 1
+                })
+            }
             
         }
         isExpanded = !isExpanded
