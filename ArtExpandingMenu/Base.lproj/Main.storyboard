@@ -25,12 +25,12 @@
                                 <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="number" keyPath="menuRadius">
-                                        <real key="value" value="200"/>
+                                        <real key="value" value="150"/>
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" red="0.0" green="0.50196081400000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="qtk-Cm-TFx" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="9HE-Ea-wNa"/>
                             <constraint firstItem="qtk-Cm-TFx" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="A4Z-R4-Pyz"/>

@@ -13,7 +13,7 @@ import UIKit
 @IBDesignable class ArtExpandingMenu : UIView {
     
     private var mainButton : ArtExpandingMenuButton!
-    private var outerCircle : UIVisualEffectView!
+    private var outerCircle : UIView!
     private var isExpanded : Bool = false
     
     var subButtons : [ArtExpandingMenuButton] = []
@@ -34,16 +34,17 @@ import UIKit
     }
     
     
-    @IBInspectable var buttonColor : UIColor = #colorLiteral(red: 0.7843137255, green: 0, blue: 0, alpha: 1) {
+    @IBInspectable var menuColor : UIColor = #colorLiteral(red: 0.2980392157, green: 0.8196078431, blue: 0.7058823529, alpha: 1) {
         didSet {
             if(!isExpanded)
             {
-                mainButton.color = buttonColor
+                mainButton.color = menuColor
             }
+            outerCircle.backgroundColor = menuColor
         }
     }
     
-    @IBInspectable var selectedButtonColor : UIColor = #colorLiteral(red: 0.7058823529, green: 0.1491314173, blue: 0, alpha: 1) {
+    @IBInspectable var selectedButtonColor : UIColor = #colorLiteral(red: 0.2115617318, green: 0.5914300444, blue: 0.5133095734, alpha: 1) {
         didSet {
             if(isExpanded)
             {
@@ -84,9 +85,8 @@ import UIKit
     }
     
     func collectedInit() {
-        
-        let blurEffect = UIBlurEffect(style: .dark)
-        outerCircle = UIVisualEffectView.init(effect: blurEffect)
+        outerCircle = UIView()
+        outerCircle.backgroundColor = menuColor
         outerCircle.clipsToBounds = true
         addSubview(outerCircle)
         for i in 1...optionCount {
@@ -101,7 +101,7 @@ import UIKit
         mainButton = ArtExpandingMenuButton()
         let plusImage = UIImage(named: "plus")
         mainButton.image = plusImage
-        mainButton.color = buttonColor
+        mainButton.color = menuColor
         mainButton.tintColor = tintColor
         mainButton.addTarget(self, action: #selector(touchedUpInside), for: .touchUpInside)
         addSubview(mainButton)
@@ -132,7 +132,7 @@ import UIKit
                 self.mainButton.center = self.initialButtonRect.centerPoint()
                 self.outerCircle.frame = self.initialButtonRect
                 self.outerCircle.layer.cornerRadius = self.buttonRadius
-                self.mainButton.color = self.buttonColor
+                self.mainButton.color = self.menuColor
             })
             for (index, subButton) in self.subButtons.enumerated() {
                 
