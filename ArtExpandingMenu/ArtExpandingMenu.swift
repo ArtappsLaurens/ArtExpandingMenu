@@ -18,7 +18,11 @@ import UIKit
     
     var subButtons : [ArtExpandingMenuButton] = []
     var optionCount = 3
-    var radiusRatio : CGFloat = 0.66
+    @IBInspectable var subButtonRatio : CGFloat = 0.66 {
+        didSet {
+            setNeedsLayout()
+        }
+    }
     
     @IBInspectable var buttonRadius : CGFloat = 25
     {
@@ -44,7 +48,7 @@ import UIKit
         }
     }
     
-    @IBInspectable var selectedButtonColor : UIColor = #colorLiteral(red: 0.2115617318, green: 0.5914300444, blue: 0.5133095734, alpha: 1) {
+    @IBInspectable var selectedButtonColor : UIColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0.5) {
         didSet {
             if(isExpanded)
             {
@@ -92,7 +96,7 @@ import UIKit
         for i in 1...optionCount {
             let subButton = ArtExpandingMenuButton()
             subButton.frame.size = CGSize(width: 30, height: 30)
-            subButton.color = .white
+            subButton.color = tintColor
             subButton.alpha = 0
             subButtons.append(subButton)
             addSubview(subButton)
@@ -117,7 +121,7 @@ import UIKit
     }
     
     private func centerPointForSubButton(index : Int) -> CGPoint {
-        let buttonsRadius = radiusRatio * menuRadius
+        let buttonsRadius = subButtonRatio * menuRadius
         let radiansBetweenButtons = (0.5 * CGFloat.pi) / CGFloat(optionCount-1)
         let x = menuRadius - buttonsRadius * cos(radiansBetweenButtons * CGFloat(index)) + outerCircle.frame.origin.x
         let y = menuRadius - buttonsRadius * sin(radiansBetweenButtons * CGFloat(index)) + outerCircle.frame.origin.y

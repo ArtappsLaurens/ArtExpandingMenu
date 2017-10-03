@@ -20,31 +20,26 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="cabnewyork" translatesAutoresizingMaskIntoConstraints="NO" id="eOD-uw-Lrt">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                             </imageView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qtk-Cm-TFx" customClass="ArtExpandingMenu" customModule="ArtExpandingMenu" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VeI-1j-xMj" customClass="ArtExpandingMenu" customModule="ArtExpandingMenu" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="menuRadius">
-                                        <real key="value" value="150"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="qtk-Cm-TFx" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="9HE-Ea-wNa"/>
-                            <constraint firstItem="qtk-Cm-TFx" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="A4Z-R4-Pyz"/>
-                            <constraint firstItem="qtk-Cm-TFx" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="PQq-Qz-SWG"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="VeI-1j-xMj" secondAttribute="bottom" id="Hni-v2-Bh9"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="VeI-1j-xMj" secondAttribute="trailing" id="Lb3-tR-FDp"/>
                             <constraint firstItem="eOD-uw-Lrt" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="VbY-6f-k40"/>
+                            <constraint firstItem="VeI-1j-xMj" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="dRF-xA-0bp"/>
                             <constraint firstItem="eOD-uw-Lrt" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="dw3-Zo-IbJ"/>
-                            <constraint firstItem="qtk-Cm-TFx" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="spd-Le-GJ2"/>
+                            <constraint firstItem="VeI-1j-xMj" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="tFB-Xb-TYl"/>
                             <constraint firstItem="eOD-uw-Lrt" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="wkd-53-tdy"/>
                             <constraint firstItem="eOD-uw-Lrt" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="z7T-uU-pNB"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
-                        <outlet property="menu" destination="qtk-Cm-TFx" id="GJo-9i-vD7"/>
+                        <outlet property="menu" destination="VeI-1j-xMj" id="X2P-jb-Zif"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
