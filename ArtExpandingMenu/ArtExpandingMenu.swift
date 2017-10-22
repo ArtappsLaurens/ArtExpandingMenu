@@ -16,8 +16,13 @@ import UIKit
     private var outerCircle : UIView!
     private var isExpanded : Bool = false
     
-    var subButtons : [ArtExpandingMenuButton] = []
-    var optionCount = 3
+    private var subButtons : [UIButton] = []
+    
+    var options : [(name: String, title: String)] = [("plus", "First one"), ("plus", "Second one"), ("plus", "Third one")] {
+        didSet {
+            setSubButtons()
+        }
+    }
     @IBInspectable var subButtonRatio : CGFloat = 0.66 {
         didSet {
             setNeedsLayout()
@@ -30,7 +35,7 @@ import UIKit
             setNeedsLayout()
         }
     }
-    @IBInspectable var menuRadius : CGFloat = 150
+    @IBInspectable var menuRadius : CGFloat = 130
     {
         didSet {
             setNeedsLayout()
@@ -89,19 +94,12 @@ import UIKit
     }
     
     func collectedInit() {
+        backgroundColor = .clear
         outerCircle = UIView()
         outerCircle.backgroundColor = menuColor
         outerCircle.clipsToBounds = true
         addSubview(outerCircle)
-        for i in 1...optionCount {
-            let subButton = ArtExpandingMenuButton()
-            subButton.frame.size = CGSize(width: 30, height: 30)
-            subButton.color = tintColor
-            subButton.alpha = 0
-            subButtons.append(subButton)
-            addSubview(subButton)
-            
-        }
+        setSubButtons()
         mainButton = ArtExpandingMenuButton()
         let plusImage = UIImage(named: "plus")
         mainButton.image = plusImage
@@ -110,6 +108,25 @@ import UIKit
         mainButton.addTarget(self, action: #selector(touchedUpInside), for: .touchUpInside)
         addSubview(mainButton)
         
+    }
+    
+    func setSubButtons() {
+        for subButton in subButtons {
+            subButton.removeFromSuperview()
+        }
+        subButtons = []
+        for option in options {
+            let subButton = UIButton(type: .custom)
+            let image = UIImage(named: option.name)
+            //subButton.frame.size = CGSize(width: 30, height: 30)
+            subButton.frame.size = image!.size
+            subButton.alpha = 0
+            subButton.setImage(image, for: .normal)
+            subButton.tintColor = tintColor
+            subButtons.append(subButton)
+            addSubview(subButton)
+            
+        }
     }
     
 //    private var middleButtonRect : CGRect {
@@ -122,7 +139,7 @@ import UIKit
     
     private func centerPointForSubButton(index : Int) -> CGPoint {
         let buttonsRadius = subButtonRatio * menuRadius
-        let radiansBetweenButtons = (0.5 * CGFloat.pi) / CGFloat(optionCount-1)
+        let radiansBetweenButtons = (0.5 * CGFloat.pi) / CGFloat(options.count-1)
         let x = menuRadius - buttonsRadius * cos(radiansBetweenButtons * CGFloat(index)) + outerCircle.frame.origin.x
         let y = menuRadius - buttonsRadius * sin(radiansBetweenButtons * CGFloat(index)) + outerCircle.frame.origin.y
         return CGPoint(x: x, y: y)
@@ -131,12 +148,13 @@ import UIKit
     @objc private func touchedUpInside() {
         if(isExpanded)
         {
-            UIView.animate(withDuration: 0.2, delay: 0.05 * Double(optionCount), options: [.allowUserInteraction, .curveEaseInOut], animations: {
+            UIView.animate(withDuration: 0.2, delay: 0.05 * Double(options.count), options: [.allowUserInteraction, .curveEaseInOut], animations: {
                 self.mainButton.transform = .identity
                 self.mainButton.center = self.initialButtonRect.centerPoint()
                 self.outerCircle.frame = self.initialButtonRect
                 self.outerCircle.layer.cornerRadius = self.buttonRadius
                 self.mainButton.color = self.menuColor
+                self.backgroundColor = .clear
             })
             for (index, subButton) in self.subButtons.enumerated() {
                 
@@ -152,6 +170,9 @@ import UIKit
         }
         else
         {
+            UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseInOut], animations: {
+                self.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+            })
             UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0, options: [.allowUserInteraction], animations: {
                 self.mainButton.transform = CGAffineTransform(rotationAngle: -135 * (.pi / 180))
                 self.mainButton.color = self.selectedButtonColor
