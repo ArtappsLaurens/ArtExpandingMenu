@@ -127,9 +127,10 @@ import UIKit
     
     private func collectedInit() {
         backgroundColor = .clear
+        clipsToBounds = true
         outerCircle = UIView()
         outerCircle.backgroundColor = menuColor
-        outerCircle.clipsToBounds = true
+        //outerCircle.clipsToBounds = true
         addSubview(outerCircle)
         setSubButtons()
         mainButton = ArtExpandingMenuButton()
