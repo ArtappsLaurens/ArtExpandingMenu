@@ -6,42 +6,62 @@
 //  Copyright © 2017 Artapps. All rights reserved.
 //
 
-
-//Verwijder extensions/functies hierin om te kijken of je ze wel nodig hebt
 import UIKit
 
-@IBDesignable class ArtExpandingMenu : UIView {
+/*
+ Tutorial:
+ Don't forget the plus image asset!
+ First, you can set the appearance using these variables:
+ subButtonRatio
+ mainButtonRadius
+ menuRadius
+ backgroundAlpha
+ menuColor
+ selectedButtonColor
+ 
+ then, set the options, for example like this:
+ menu.options = [("icon1", "First option"), ("icon2", "Second option"), ("icon3", "Third option")]
+ 
+ Monitor touchUpInside to find out when an option has been pressed. lastSelectedOption will be changed.
+ */
+@IBDesignable class ArtExpandingMenu : UIControl {
     
     private var mainButton : ArtExpandingMenuButton!
     private var outerCircle : UIView!
     private var isExpanded : Bool = false
     
     private var subButtons : [UIButton] = []
+    private var titleLabels : [UILabel] = []
     
-    var options : [(name: String, title: String)] = [("plus", "First one"), ("plus", "Second one"), ("plus", "Third one")] {
+    var options : [(imagename: String, title: String)] = [] {
         didSet {
             setSubButtons()
         }
     }
-    @IBInspectable var subButtonRatio : CGFloat = 0.66 {
+    @IBInspectable var subButtonRatio : CGFloat = 0.75 {
         didSet {
             setNeedsLayout()
         }
     }
     
-    @IBInspectable var buttonRadius : CGFloat = 25
+    @IBInspectable var mainButtonRadius : CGFloat = 25
     {
         didSet {
             setNeedsLayout()
         }
     }
-    @IBInspectable var menuRadius : CGFloat = 130
+    @IBInspectable var menuRadius : CGFloat = 120
     {
         didSet {
             setNeedsLayout()
         }
     }
     
+    @IBInspectable var backgroundAlpha : CGFloat = 0.6 {
+        didSet {
+            backgroundColor = UIColor.black.withAlphaComponent(backgroundAlpha)
+        }
+    }
     
     @IBInspectable var menuColor : UIColor = #colorLiteral(red: 0.2980392157, green: 0.8196078431, blue: 0.7058823529, alpha: 1) {
         didSet {
@@ -60,6 +80,13 @@ import UIKit
                 mainButton.color = selectedButtonColor
             }
         }
+    }
+    
+    var lastSelectedOption : Int? {
+        didSet {
+            sendActions(for: .touchUpInside)
+        }
+        
     }
     
     override init(frame: CGRect) {
@@ -85,15 +112,20 @@ import UIKit
             }
         } else {
             outerCircle.frame = initialButtonRect
-            outerCircle.layer.cornerRadius = buttonRadius
+            outerCircle.layer.cornerRadius = mainButtonRadius
             for subButton in subButtons {
                 subButton.center = initialButtonRect.centerPoint()
             }
         }
+        for (index, titleLabel) in titleLabels.enumerated() {
+            let rightAnchorPoint = rightAnchorPointForTitleLabel(index: index)
+            let correctedPoint = CGPoint(x: rightAnchorPoint.x-titleLabel.frame.width, y: rightAnchorPoint.y-titleLabel.frame.height/2)
+            titleLabel.frame.origin = correctedPoint
+        }
         
     }
     
-    func collectedInit() {
+    private func collectedInit() {
         backgroundColor = .clear
         outerCircle = UIView()
         outerCircle.backgroundColor = menuColor
@@ -110,21 +142,46 @@ import UIKit
         
     }
     
-    func setSubButtons() {
+    @objc private func subButtonPressed(sender: UIButton)
+    {
+        
+        for (index, button) in subButtons.enumerated() {
+            if(button==sender)
+            {
+                lastSelectedOption = index
+                closeMenu()
+            }
+        }
+    }
+    
+    private func setSubButtons() {
         for subButton in subButtons {
             subButton.removeFromSuperview()
+        }
+        for titleLabel in titleLabels {
+            titleLabel.removeFromSuperview()
         }
         subButtons = []
         for option in options {
             let subButton = UIButton(type: .custom)
-            let image = UIImage(named: option.name)
+            let image = UIImage(named: option.imagename)
             //subButton.frame.size = CGSize(width: 30, height: 30)
             subButton.frame.size = image!.size
             subButton.alpha = 0
             subButton.setImage(image, for: .normal)
             subButton.tintColor = tintColor
+            subButton.addTarget(self, action: #selector(subButtonPressed(sender:)), for: .touchUpInside)
             subButtons.append(subButton)
             addSubview(subButton)
+            
+            let titleLabel = UILabel()
+            titleLabel.text = option.title
+            titleLabel.font = UIFont(name: "Avenir-Roman", size: 16)
+            titleLabel.textColor = .white
+            titleLabel.sizeToFit()
+            titleLabel.alpha = 0
+            titleLabels.append(titleLabel)
+            addSubview(titleLabel)
             
         }
     }
@@ -134,7 +191,7 @@ import UIKit
 //    }
     
     private var initialButtonRect : CGRect {
-        return CGRect(x: bounds.size.width-16-buttonRadius*2, y: bounds.size.height-20-buttonRadius*2, width: buttonRadius*2, height: buttonRadius*2)
+        return CGRect(x: frame.size.width-16-mainButtonRadius*2, y: frame.size.height-20-mainButtonRadius*2, width: mainButtonRadius*2, height: mainButtonRadius*2)
     }
     
     private func centerPointForSubButton(index : Int) -> CGPoint {
@@ -145,33 +202,53 @@ import UIKit
         return CGPoint(x: x, y: y)
     }
     
+    private func rightAnchorPointForTitleLabel(index : Int) -> CGPoint {
+        let labelRadius = menuRadius+12
+        let radiansBetweenButtons = (0.5 * CGFloat.pi) / CGFloat(options.count-1)
+        let outerCircleOrigin = self.initialButtonRect.adjustSizeWhileCentered(newWidth: self.menuRadius*2, newHeight: self.menuRadius*2).origin
+        let x = menuRadius - labelRadius * cos(radiansBetweenButtons * CGFloat(index)) + outerCircleOrigin.x
+        let y = menuRadius - labelRadius * sin(radiansBetweenButtons * CGFloat(index)) + outerCircleOrigin.y
+        return CGPoint(x: x, y: y)
+    }
+    
+    private func closeMenu() {
+        UIView.animate(withDuration: 0.2, delay: 0.05 * Double(options.count), options: [.allowUserInteraction, .curveEaseInOut], animations: {
+            self.mainButton.transform = .identity
+            self.mainButton.center = self.initialButtonRect.centerPoint()
+            self.outerCircle.frame = self.initialButtonRect
+            self.outerCircle.layer.cornerRadius = self.mainButtonRadius
+            self.mainButton.color = self.menuColor
+            self.backgroundColor = .clear
+            for titleLabel in self.titleLabels {
+                titleLabel.alpha = 0
+            }
+        })
+        for (index, subButton) in self.subButtons.enumerated() {
+            
+            
+            UIView.animate(withDuration: 0.2, delay: 0.05*Double(index), options: [.allowUserInteraction, .curveEaseInOut], animations: {
+                subButton.center = self.initialButtonRect.centerPoint()
+            })
+            UIView.animate(withDuration: 0.1, delay: 0.05*Double(index), options: [.allowUserInteraction, .curveEaseInOut], animations: {
+                subButton.alpha = 0
+            })
+        }
+        isExpanded = false
+    }
     @objc private func touchedUpInside() {
         if(isExpanded)
         {
-            UIView.animate(withDuration: 0.2, delay: 0.05 * Double(options.count), options: [.allowUserInteraction, .curveEaseInOut], animations: {
-                self.mainButton.transform = .identity
-                self.mainButton.center = self.initialButtonRect.centerPoint()
-                self.outerCircle.frame = self.initialButtonRect
-                self.outerCircle.layer.cornerRadius = self.buttonRadius
-                self.mainButton.color = self.menuColor
-                self.backgroundColor = .clear
-            })
-            for (index, subButton) in self.subButtons.enumerated() {
-                
-                
-                UIView.animate(withDuration: 0.2, delay: 0.05*Double(index), options: [.allowUserInteraction, .curveEaseInOut], animations: {
-                    subButton.center = self.initialButtonRect.centerPoint()
-                })
-                UIView.animate(withDuration: 0.1, delay: 0.05*Double(index), options: [.allowUserInteraction, .curveEaseInOut], animations: {
-                    subButton.alpha = 0
-                })
-                
-            }
+            closeMenu()
         }
         else
         {
             UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseInOut], animations: {
-                self.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+                self.backgroundColor = UIColor.black.withAlphaComponent(self.backgroundAlpha)
+            })
+            UIView.animate(withDuration: 0.3, delay: 0.2, options: [.curveEaseInOut], animations: {
+                for titleLabel in self.titleLabels {
+                    titleLabel.alpha = 1
+                }
             })
             UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0, options: [.allowUserInteraction], animations: {
                 self.mainButton.transform = CGAffineTransform(rotationAngle: -135 * (.pi / 180))
@@ -190,9 +267,8 @@ import UIKit
                     subButton.alpha = 1
                 })
             }
-            
+            isExpanded = true
         }
-        isExpanded = !isExpanded
     }
 }
 
@@ -222,7 +298,7 @@ import UIKit
         collectedInit()
     }
     
-    func collectedInit() {
+    private func collectedInit() {
         circleView = UIView()
         circleView.backgroundColor = color
         circleView.isUserInteractionEnabled = false

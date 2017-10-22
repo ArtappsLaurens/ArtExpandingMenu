@@ -13,8 +13,11 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        menu.options = [("plus", "First option"), ("plus", "Second option"), ("plus", "Third option")]
         // Do any additional setup after loading the view, typically from a nib.
+    }
+    @IBAction func optionPressed(_ sender: Any) {
+        print("option pressed: \(menu.lastSelectedOption!)")
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
