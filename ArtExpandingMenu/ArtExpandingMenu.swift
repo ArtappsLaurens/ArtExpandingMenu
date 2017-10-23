@@ -59,7 +59,10 @@ import UIKit
     
     @IBInspectable var backgroundAlpha : CGFloat = 0.6 {
         didSet {
-            backgroundColor = UIColor.black.withAlphaComponent(backgroundAlpha)
+            if(isExpanded)
+            {
+                backgroundColor = UIColor.black.withAlphaComponent(backgroundAlpha)
+            }
         }
     }
     
