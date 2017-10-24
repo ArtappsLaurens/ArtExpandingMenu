@@ -39,7 +39,7 @@ import UIKit
             setSubButtons()
         }
     }
-    @IBInspectable var subButtonRatio : CGFloat = 0.75 {
+    @IBInspectable var subButtonRatio : CGFloat = 0.7 {
         didSet {
             setNeedsLayout()
         }
@@ -51,7 +51,7 @@ import UIKit
             setNeedsLayout()
         }
     }
-    @IBInspectable var menuRadius : CGFloat = 120
+    @IBInspectable var menuRadius : CGFloat = 130
     {
         didSet {
             setNeedsLayout()
@@ -85,6 +85,8 @@ import UIKit
             }
         }
     }
+    
+    var insetDegrees : CGFloat = .pi / (180 / 10)
     
     var lastSelectedOption : Int? {
         didSet {
@@ -123,8 +125,9 @@ import UIKit
         }
         for (index, titleLabelContainer) in titleLabelContainers.enumerated() {
             let rightAnchorPoint = rightAnchorPointForTitleLabel(index: index)
-            let correctedPoint = CGPoint(x: rightAnchorPoint.x-titleLabelContainer.frame.width, y: rightAnchorPoint.y-titleLabelContainer.frame.height/2)
-            titleLabelContainer.frame.origin = correctedPoint
+            //let correctedPoint = CGPoint(x: rightAnchorPoint.x-titleLabelContainer.frame.width, y: rightAnchorPoint.y-titleLabelContainer.frame.height/2)
+            //titleLabelContainer.frame.origin = correctedPoint
+            titleLabelContainer.center = rightAnchorPoint
         }
         
     }
@@ -171,7 +174,9 @@ import UIKit
             titleLabelContainer.removeFromSuperview()
         }
         subButtons = []
-        for option in options {
+        let numberOfOptions = options.count
+        
+        for (index, option) in options.enumerated() {
             let subButton = UIButton(type: .custom)
             let image = UIImage(named: option.imagename)
             //subButton.frame.size = CGSize(width: 30, height: 30)
@@ -191,15 +196,18 @@ import UIKit
             titleLabel.sizeToFit()
             
             
-            let correctedTitleLabelSize = CGSize(width: titleLabel.frame.width+8, height: titleLabel.frame.height+8)
+            let correctedTitleLabelSize = CGSize(width: titleLabel.frame.width+8, height: titleLabel.frame.height+4)
             titleLabel.frame.size = correctedTitleLabelSize
             
             let titleLabelContainer = UIView()
             titleLabelContainer.frame.size = correctedTitleLabelSize
-            titleLabelContainer.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+            titleLabelContainer.backgroundColor = UIColor.black
             titleLabelContainer.addSubview(titleLabel)
             titleLabelContainer.alpha = 0
             titleLabelContainer.layer.cornerRadius = 5
+            titleLabelContainer.layer.anchorPoint = CGPoint(x: 1, y: 0.5)
+            let rotation = insetDegrees + ((CGFloat.pi / 2 - insetDegrees * 2) / CGFloat(numberOfOptions-1)) * CGFloat(index)
+            titleLabelContainer.transform = titleLabelContainer.transform.rotated(by: rotation)
             titleLabelContainers.append(titleLabelContainer)
             addSubview(titleLabelContainer)
         }
@@ -215,18 +223,18 @@ import UIKit
     
     private func centerPointForSubButton(index : Int) -> CGPoint {
         let buttonsRadius = subButtonRatio * menuRadius
-        let radiansBetweenButtons = (0.5 * CGFloat.pi) / CGFloat(options.count-1)
-        let x = menuRadius - buttonsRadius * cos(radiansBetweenButtons * CGFloat(index)) + outerCircle.frame.origin.x
-        let y = menuRadius - buttonsRadius * sin(radiansBetweenButtons * CGFloat(index)) + outerCircle.frame.origin.y
+        let radiansBetweenButtons = (CGFloat.pi / 2 - insetDegrees * 2) / CGFloat(options.count-1)
+        let x = menuRadius - buttonsRadius * cos(radiansBetweenButtons * CGFloat(index) + insetDegrees) + outerCircle.frame.origin.x
+        let y = menuRadius - buttonsRadius * sin(radiansBetweenButtons * CGFloat(index) + insetDegrees) + outerCircle.frame.origin.y
         return CGPoint(x: x, y: y)
     }
     
     private func rightAnchorPointForTitleLabel(index : Int) -> CGPoint {
-        let labelRadius = menuRadius+12
-        let radiansBetweenButtons = (0.5 * CGFloat.pi) / CGFloat(options.count-1)
+        let labelRadius = menuRadius + 8
+        let radiansBetweenButtons = (CGFloat.pi / 2 - insetDegrees * 2) / CGFloat(options.count-1)
         let outerCircleOrigin = self.initialButtonRect.adjustSizeWhileCentered(newWidth: self.menuRadius*2, newHeight: self.menuRadius*2).origin
-        let x = menuRadius - labelRadius * cos(radiansBetweenButtons * CGFloat(index)) + outerCircleOrigin.x
-        let y = menuRadius - labelRadius * sin(radiansBetweenButtons * CGFloat(index)) + outerCircleOrigin.y
+        let x = menuRadius - labelRadius * cos(radiansBetweenButtons * CGFloat(index) + insetDegrees) + outerCircleOrigin.x
+        let y = menuRadius - labelRadius * sin(radiansBetweenButtons * CGFloat(index) + insetDegrees) + outerCircleOrigin.y
         return CGPoint(x: x, y: y)
     }
     
@@ -267,7 +275,7 @@ import UIKit
             })
             UIView.animate(withDuration: 0.3, delay: 0.2, options: [.curveEaseInOut], animations: {
                 for titleLabelContainer in self.titleLabelContainers {
-                    titleLabelContainer.alpha = 1
+                    titleLabelContainer.alpha = 0.7
                 }
             })
             UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0, options: [.allowUserInteraction], animations: {
