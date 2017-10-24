@@ -26,6 +26,7 @@ import UIKit
  */
 @IBDesignable class ArtExpandingMenu : UIControl {
     
+    private var backgroundButton : UIButton!
     private var mainButton : ArtExpandingMenuButton!
     private var outerCircle : UIView!
     private var isExpanded : Bool = false
@@ -89,7 +90,6 @@ import UIKit
         didSet {
             sendActions(for: .valueChanged)
         }
-        
     }
     
     override init(frame: CGRect) {
@@ -103,6 +103,7 @@ import UIKit
     }
     
     override func layoutSubviews() {
+        backgroundButton.frame = frame
         mainButton.transform = .identity
         mainButton.frame = initialButtonRect
         if(isExpanded)
@@ -131,6 +132,10 @@ import UIKit
     private func collectedInit() {
         backgroundColor = .clear
         clipsToBounds = true
+        backgroundButton = UIButton(type: .custom)
+        backgroundButton.alpha = 0
+        backgroundButton.addTarget(self, action: #selector(closeMenu), for: .touchDown)
+        addSubview(backgroundButton)
         outerCircle = UIView()
         outerCircle.backgroundColor = menuColor
         //outerCircle.clipsToBounds = true
@@ -215,7 +220,7 @@ import UIKit
         return CGPoint(x: x, y: y)
     }
     
-    private func closeMenu() {
+    @objc private func closeMenu() {
         UIView.animate(withDuration: 0.2, delay: 0.05 * Double(options.count), options: [.allowUserInteraction, .curveEaseInOut], animations: {
             self.mainButton.transform = .identity
             self.mainButton.center = self.initialButtonRect.centerPoint()
@@ -237,6 +242,7 @@ import UIKit
                 subButton.alpha = 0
             })
         }
+        backgroundButton.alpha = 0
         isExpanded = false
     }
     @objc private func touchedUpInside() {
@@ -271,8 +277,20 @@ import UIKit
                     subButton.alpha = 1
                 })
             }
+            backgroundButton.alpha = 1
             isExpanded = true
         }
+    }
+    
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        for subview in subviews {
+            let tapIsinsideView = subview.hitTest(convert(point, to: subview), with: event) != nil
+            if(tapIsinsideView)
+            {
+                return true
+            }
+        }
+        return false
     }
 }
 
