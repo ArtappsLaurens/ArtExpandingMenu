@@ -24,7 +24,7 @@
                                 <rect key="frame" x="0.0" y="20" width="320" height="548"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
-                                    <action selector="optionPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ent-Bx-NZM"/>
+                                    <action selector="optionPressed:" destination="BYZ-38-t0r" eventType="valueChanged" id="CU9-9R-pcO"/>
                                 </connections>
                             </view>
                         </subviews>

@@ -22,7 +22,7 @@ import UIKit
  then, set the options, for example like this:
  menu.options = [("icon1", "First option"), ("icon2", "Second option"), ("icon3", "Third option")]
  
- Monitor touchUpInside to find out when an option has been pressed. lastSelectedOption will be changed.
+ Monitor valueChanged to find out when an option has been pressed. lastSelectedOption will be changed.
  */
 @IBDesignable class ArtExpandingMenu : UIControl {
     
@@ -87,7 +87,7 @@ import UIKit
     
     var lastSelectedOption : Int? {
         didSet {
-            sendActions(for: .touchUpInside)
+            sendActions(for: .valueChanged)
         }
         
     }
