@@ -32,7 +32,7 @@ import UIKit
     private var isExpanded : Bool = false
     
     private var subButtons : [UIButton] = []
-    private var titleLabels : [UILabel] = []
+    private var titleLabelContainers : [UIView] = []
     
     var options : [(imagename: String, title: String)] = [] {
         didSet {
@@ -121,10 +121,10 @@ import UIKit
                 subButton.center = initialButtonRect.centerPoint()
             }
         }
-        for (index, titleLabel) in titleLabels.enumerated() {
+        for (index, titleLabelContainer) in titleLabelContainers.enumerated() {
             let rightAnchorPoint = rightAnchorPointForTitleLabel(index: index)
-            let correctedPoint = CGPoint(x: rightAnchorPoint.x-titleLabel.frame.width, y: rightAnchorPoint.y-titleLabel.frame.height/2)
-            titleLabel.frame.origin = correctedPoint
+            let correctedPoint = CGPoint(x: rightAnchorPoint.x-titleLabelContainer.frame.width, y: rightAnchorPoint.y-titleLabelContainer.frame.height/2)
+            titleLabelContainer.frame.origin = correctedPoint
         }
         
     }
@@ -167,8 +167,8 @@ import UIKit
         for subButton in subButtons {
             subButton.removeFromSuperview()
         }
-        for titleLabel in titleLabels {
-            titleLabel.removeFromSuperview()
+        for titleLabelContainer in titleLabelContainers {
+            titleLabelContainer.removeFromSuperview()
         }
         subButtons = []
         for option in options {
@@ -185,13 +185,23 @@ import UIKit
             
             let titleLabel = UILabel()
             titleLabel.text = option.title
-            titleLabel.font = UIFont(name: "Avenir-Roman", size: 16)
+            titleLabel.font = UIFont(name: "Avenir-Roman", size: 14)
+            titleLabel.textAlignment = .center
             titleLabel.textColor = .white
             titleLabel.sizeToFit()
-            titleLabel.alpha = 0
-            titleLabels.append(titleLabel)
-            addSubview(titleLabel)
             
+            
+            let correctedTitleLabelSize = CGSize(width: titleLabel.frame.width+8, height: titleLabel.frame.height+8)
+            titleLabel.frame.size = correctedTitleLabelSize
+            
+            let titleLabelContainer = UIView()
+            titleLabelContainer.frame.size = correctedTitleLabelSize
+            titleLabelContainer.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+            titleLabelContainer.addSubview(titleLabel)
+            titleLabelContainer.alpha = 0
+            titleLabelContainer.layer.cornerRadius = 5
+            titleLabelContainers.append(titleLabelContainer)
+            addSubview(titleLabelContainer)
         }
     }
     
@@ -228,8 +238,8 @@ import UIKit
             self.outerCircle.layer.cornerRadius = self.mainButtonRadius
             self.mainButton.color = self.menuColor
             self.backgroundColor = .clear
-            for titleLabel in self.titleLabels {
-                titleLabel.alpha = 0
+            for titleLabelContainer in self.titleLabelContainers {
+                titleLabelContainer.alpha = 0
             }
         })
         for (index, subButton) in self.subButtons.enumerated() {
@@ -256,8 +266,8 @@ import UIKit
                 self.backgroundColor = UIColor.black.withAlphaComponent(self.backgroundAlpha)
             })
             UIView.animate(withDuration: 0.3, delay: 0.2, options: [.curveEaseInOut], animations: {
-                for titleLabel in self.titleLabels {
-                    titleLabel.alpha = 1
+                for titleLabelContainer in self.titleLabelContainers {
+                    titleLabelContainer.alpha = 1
                 }
             })
             UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0, options: [.allowUserInteraction], animations: {
