@@ -39,7 +39,7 @@ import UIKit
             setSubButtons()
         }
     }
-    @IBInspectable var subButtonRatio : CGFloat = 0.7 {
+    @IBInspectable var subButtonRatio : CGFloat = 0.75 {
         didSet {
             setNeedsLayout()
         }
@@ -86,7 +86,7 @@ import UIKit
         }
     }
     
-    var insetDegrees : CGFloat = .pi / (180 / 10)
+    var insetDegrees : CGFloat = .pi / (180 / 2.5)
     
     var lastSelectedOption : Int? {
         didSet {
@@ -395,3 +395,4 @@ extension CGRect {
         return CGPoint(x: self.origin.x + width/2, y: self.origin.y + height/2)
     }
 }
+
