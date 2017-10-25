@@ -343,7 +343,7 @@ import UIKit
             })
             UIView.animate(withDuration: 0.3, delay: 0.2, options: [.curveEaseInOut], animations: {
                 for titleLabelContainer in self.titleLabelContainers {
-                    titleLabelContainer.alpha = 0.7
+                    titleLabelContainer.alpha = 0.9
                 }
             })
             UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0, options: [.allowUserInteraction], animations: {
