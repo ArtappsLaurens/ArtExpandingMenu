@@ -19,6 +19,15 @@ import UIKit
  menuColor
  selectedButtonColor
  outerDegrees
+ menuBackgroundType
+ 
+ Note: want to set menuBackgroundType from from interface builder? Use backgroundID:
+ 0: regularColor
+ 1: extraLight
+ 2: light
+ 3: dark
+ 4: regular
+ 5: prominent
  
  then, set the options, for example like this:
  menu.options = [("icon1", "First option"), ("icon2", "Second option"), ("icon3", "Third option")]
@@ -30,7 +39,7 @@ import UIKit
     
     private var backgroundButton : UIButton!
     private var mainButton : ArtExpandingMenuButton!
-    private var outerCircle : UIView!
+    private var outerCircle : UIVisualEffectView!
     private var isExpanded : Bool = false
     
     private var subButtons : [UIButton] = []
@@ -60,7 +69,7 @@ import UIKit
         }
     }
     
-    @IBInspectable var backgroundAlpha : CGFloat = 0.6 {
+    @IBInspectable var backgroundAlpha : CGFloat = 0.2 {
         didSet {
             if(isExpanded)
             {
@@ -94,9 +103,37 @@ import UIKit
         }
     }
     
-    var insetDegrees : CGFloat = .pi / (180 / 2.5)
+    @IBInspectable var backgroundID : Int = 0 {
+        //This function is only used to set menuBackGroundType from interface builder
+        didSet {
+            switch backgroundID {
+            case 0:
+                menuBackgroundType = .regularColor
+            case 1:
+                menuBackgroundType = .extraLight
+            case 2:
+                menuBackgroundType = .light
+            case 3:
+                menuBackgroundType = .dark
+            case 4:
+                menuBackgroundType = .regular
+            case 5:
+                menuBackgroundType = .prominent
+            default:
+                menuBackgroundType = .regularColor
+            }
+        }
+    }
     
-    var lastSelectedOption : Int? {
+    var menuBackgroundType : BackgroundType = BackgroundType.regularColor {
+        didSet {
+            setOuterCircleBackground()
+        }
+    }
+    
+    private var insetDegrees : CGFloat = .pi / (180 / 2.5)
+    
+    private(set) var lastSelectedOption : Int? {
         didSet {
             sendActions(for: .valueChanged)
         }
@@ -140,6 +177,29 @@ import UIKit
         
     }
     
+    private func setOuterCircleBackground() {
+
+        switch menuBackgroundType {
+        case .regularColor:
+            outerCircle.effect = nil
+            outerCircle.backgroundColor = menuColor
+        case .extraLight:
+            outerCircle.effect = UIBlurEffect(style: .extraLight)
+            outerCircle.backgroundColor = .clear
+        case .light:
+            outerCircle.effect = UIBlurEffect(style: .light)
+            outerCircle.backgroundColor = .clear
+        case .dark:
+            outerCircle.effect = UIBlurEffect(style: .dark)
+            outerCircle.backgroundColor = .clear
+        case .regular:
+            outerCircle.effect = UIBlurEffect(style: .regular)
+            outerCircle.backgroundColor = .clear
+        case .prominent:
+            outerCircle.effect = UIBlurEffect(style: .prominent)
+            outerCircle.backgroundColor = .clear
+        }
+    }
     private func collectedInit() {
         backgroundColor = .clear
         clipsToBounds = true
@@ -147,9 +207,9 @@ import UIKit
         backgroundButton.alpha = 0
         backgroundButton.addTarget(self, action: #selector(closeMenu), for: .touchDown)
         addSubview(backgroundButton)
-        outerCircle = UIView()
-        outerCircle.backgroundColor = menuColor
-        //outerCircle.clipsToBounds = true
+        outerCircle = UIVisualEffectView()
+        setOuterCircleBackground()
+        outerCircle.clipsToBounds = true
         addSubview(outerCircle)
         setSubButtons()
         mainButton = ArtExpandingMenuButton()
@@ -382,6 +442,15 @@ import UIKit
             self.alpha = 1
         })
     }
+}
+
+enum BackgroundType {
+    case regularColor
+    case extraLight
+    case light
+    case dark
+    case regular
+    case prominent
 }
 
 extension CGRect {
