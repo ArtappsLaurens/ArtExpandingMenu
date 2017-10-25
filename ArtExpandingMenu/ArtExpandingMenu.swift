@@ -18,12 +18,14 @@ import UIKit
  backgroundAlpha
  menuColor
  selectedButtonColor
+ outerDegrees
  
  then, set the options, for example like this:
  menu.options = [("icon1", "First option"), ("icon2", "Second option"), ("icon3", "Third option")]
  
  Monitor valueChanged to find out when an option has been pressed. lastSelectedOption will be changed.
  */
+
 @IBDesignable class ArtExpandingMenu : UIControl {
     
     private var backgroundButton : UIButton!
@@ -83,6 +85,12 @@ import UIKit
             {
                 mainButton.color = selectedButtonColor
             }
+        }
+    }
+    
+    @IBInspectable var outerDegrees : Double = 2.5 {
+        didSet {
+            insetDegrees = CGFloat(outerDegrees * .pi / 180)
         }
     }
     
@@ -157,7 +165,7 @@ import UIKit
     @objc private func subButtonPressed(sender: UIButton)
     {
         
-        for (index, button) in subButtons.enumerated() {
+        for (index, button) in subButtons.reversed().enumerated() {
             if(button==sender)
             {
                 lastSelectedOption = index
@@ -176,7 +184,7 @@ import UIKit
         subButtons = []
         let numberOfOptions = options.count
         
-        for (index, option) in options.enumerated() {
+        for (index, option) in options.reversed().enumerated() {
             let subButton = UIButton(type: .custom)
             let image = UIImage(named: option.imagename)
             //subButton.frame.size = CGSize(width: 30, height: 30)
