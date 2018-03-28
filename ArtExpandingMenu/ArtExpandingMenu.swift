@@ -222,11 +222,7 @@ import UIKit
         addSubview(mainButton)
         
     }
-    
-    @objc private func subButtonTouchDown(sender: UIButton)
-    {
-        selectionFeedbackGenerator.selectionChanged()
-    }
+
     @objc private func subButtonTouchUpInside(sender: UIButton)
     {
         selectionFeedbackGenerator.selectionChanged()
@@ -258,7 +254,6 @@ import UIKit
             subButton.setImage(image, for: .normal)
             subButton.tintColor = tintColor
             subButton.addTarget(self, action: #selector(subButtonTouchUpInside(sender:)), for: .touchUpInside)
-            subButton.addTarget(self, action: #selector(subButtonTouchDown(sender:)), for: .touchDown)
             subButtons.append(subButton)
             addSubview(subButton)
             
@@ -438,7 +433,6 @@ import UIKit
     }
     
     override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
-        selectionFeedbackGenerator.selectionChanged()
         UIView.animate(withDuration: 0.2, delay: 0, options: .allowUserInteraction, animations: {
             self.alpha = 0.4
         })
