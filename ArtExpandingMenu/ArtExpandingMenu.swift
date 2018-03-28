@@ -45,7 +45,7 @@ import UIKit
     private var subButtons : [UIButton] = []
     private var titleLabelContainers : [UIView] = []
     
-    private let impactFeedbackGenerator = UIImpactFeedbackGenerator()
+    private let selectionFeedbackGenerator = UISelectionFeedbackGenerator()
     var options : [(imagename: String, title: String)] = [] {
         didSet {
             setSubButtons()
@@ -225,11 +225,11 @@ import UIKit
     
     @objc private func subButtonTouchDown(sender: UIButton)
     {
-        impactFeedbackGenerator.impactOccurred()
+        selectionFeedbackGenerator.selectionChanged()
     }
     @objc private func subButtonTouchUpInside(sender: UIButton)
     {
-        impactFeedbackGenerator.impactOccurred()
+        selectionFeedbackGenerator.selectionChanged()
         for (index, button) in subButtons.reversed().enumerated() {
             if(button==sender)
             {
@@ -390,7 +390,7 @@ import UIKit
     
     var circleView : UIView!
     var imageView : UIImageView!
-    private let impactFeedbackGenerator = UIImpactFeedbackGenerator()
+    private let selectionFeedbackGenerator = UISelectionFeedbackGenerator()
     @IBInspectable var image : UIImage? {
         didSet {
             setImage()
@@ -438,7 +438,7 @@ import UIKit
     }
     
     override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
-        impactFeedbackGenerator.impactOccurred()
+        selectionFeedbackGenerator.selectionChanged()
         UIView.animate(withDuration: 0.2, delay: 0, options: .allowUserInteraction, animations: {
             self.alpha = 0.4
         })
@@ -446,7 +446,7 @@ import UIKit
     }
     
     override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
-        impactFeedbackGenerator.impactOccurred()
+        selectionFeedbackGenerator.selectionChanged()
         UIView.animate(withDuration: 0.35, delay: 0, options: .allowUserInteraction, animations: {
             self.alpha = 1
         })
