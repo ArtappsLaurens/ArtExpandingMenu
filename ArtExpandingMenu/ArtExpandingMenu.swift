@@ -45,6 +45,7 @@ import UIKit
     private var subButtons : [UIButton] = []
     private var titleLabelContainers : [UIView] = []
     
+    private let impactFeedbackGenerator = UIImpactFeedbackGenerator()
     var options : [(imagename: String, title: String)] = [] {
         didSet {
             setSubButtons()
@@ -222,9 +223,13 @@ import UIKit
         
     }
     
-    @objc private func subButtonPressed(sender: UIButton)
+    @objc private func subButtonTouchDown(sender: UIButton)
     {
-        
+        impactFeedbackGenerator.impactOccurred()
+    }
+    @objc private func subButtonTouchUpInside(sender: UIButton)
+    {
+        impactFeedbackGenerator.impactOccurred()
         for (index, button) in subButtons.reversed().enumerated() {
             if(button==sender)
             {
@@ -252,7 +257,8 @@ import UIKit
             subButton.alpha = 0
             subButton.setImage(image, for: .normal)
             subButton.tintColor = tintColor
-            subButton.addTarget(self, action: #selector(subButtonPressed(sender:)), for: .touchUpInside)
+            subButton.addTarget(self, action: #selector(subButtonTouchUpInside(sender:)), for: .touchUpInside)
+            subButton.addTarget(self, action: #selector(subButtonTouchDown(sender:)), for: .touchDown)
             subButtons.append(subButton)
             addSubview(subButton)
             
@@ -384,6 +390,7 @@ import UIKit
     
     var circleView : UIView!
     var imageView : UIImageView!
+    private let impactFeedbackGenerator = UIImpactFeedbackGenerator()
     @IBInspectable var image : UIImage? {
         didSet {
             setImage()
@@ -431,6 +438,7 @@ import UIKit
     }
     
     override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
+        impactFeedbackGenerator.impactOccurred()
         UIView.animate(withDuration: 0.2, delay: 0, options: .allowUserInteraction, animations: {
             self.alpha = 0.4
         })
@@ -438,6 +446,7 @@ import UIKit
     }
     
     override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
+        impactFeedbackGenerator.impactOccurred()
         UIView.animate(withDuration: 0.35, delay: 0, options: .allowUserInteraction, animations: {
             self.alpha = 1
         })
