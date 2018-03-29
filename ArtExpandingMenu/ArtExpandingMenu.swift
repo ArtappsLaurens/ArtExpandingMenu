@@ -45,7 +45,7 @@ import UIKit
     private var subButtons : [UIButton] = []
     private var titleLabelContainers : [UIView] = []
     
-    private let selectionFeedbackGenerator = UISelectionFeedbackGenerator()
+    private let impactFeedbackGenerator = UIImpactFeedbackGenerator()
     var options : [(imagename: String, title: String)] = [] {
         didSet {
             setSubButtons()
@@ -58,13 +58,13 @@ import UIKit
     }
     
     @IBInspectable var mainButtonRadius : CGFloat = 25
-    {
+        {
         didSet {
             setNeedsLayout()
         }
     }
     @IBInspectable var menuRadius : CGFloat = 130
-    {
+        {
         didSet {
             setNeedsLayout()
         }
@@ -179,7 +179,7 @@ import UIKit
     }
     
     private func setOuterCircleBackground() {
-
+        
         switch menuBackgroundType {
         case .regularColor:
             outerCircle.effect = nil
@@ -222,10 +222,10 @@ import UIKit
         addSubview(mainButton)
         
     }
-
+    
     @objc private func subButtonTouchUpInside(sender: UIButton)
     {
-        selectionFeedbackGenerator.selectionChanged()
+        impactFeedbackGenerator.impactOccurred()
         for (index, button) in subButtons.reversed().enumerated() {
             if(button==sender)
             {
@@ -282,9 +282,9 @@ import UIKit
         }
     }
     
-//    private var middleButtonRect : CGRect {
-//        return CGRect(x: bounds.size.width/2-buttonRadius, y: bounds.size.height-20-buttonRadius*2, width: buttonRadius*2, height: buttonRadius*2)
-//    }
+    //    private var middleButtonRect : CGRect {
+    //        return CGRect(x: bounds.size.width/2-buttonRadius, y: bounds.size.height-20-buttonRadius*2, width: buttonRadius*2, height: buttonRadius*2)
+    //    }
     
     private var initialButtonRect : CGRect {
         return CGRect(x: frame.size.width-16-mainButtonRadius*2, y: frame.size.height-20-mainButtonRadius*2, width: mainButtonRadius*2, height: mainButtonRadius*2)
@@ -385,7 +385,7 @@ import UIKit
     
     var circleView : UIView!
     var imageView : UIImageView!
-    private let selectionFeedbackGenerator = UISelectionFeedbackGenerator()
+    private let impactFeedbackGenerator = UIImpactFeedbackGenerator()
     @IBInspectable var image : UIImage? {
         didSet {
             setImage()
@@ -440,7 +440,7 @@ import UIKit
     }
     
     override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
-        selectionFeedbackGenerator.selectionChanged()
+        impactFeedbackGenerator.impactOccurred()
         UIView.animate(withDuration: 0.35, delay: 0, options: .allowUserInteraction, animations: {
             self.alpha = 1
         })
